@@ -19,15 +19,14 @@ def geocode(address, provider='google', display_map=False):
 
 def main ():
 
-    # Get coordinates of individual address or latitude, longitude pair using specific provider (only 'google' for now)
-    # If reverse parameter is True, the tools assumes that you want the address of a coordinate pair (e.g. '60.1726348, 24.9510419')
-    # If display_map parameter is True, it opens the geocoded location in web browser using google maps
+    # Get coordinates of an address or address of a 'lat, lon' (e.g. '60.1726, 24.9510') --> only 'google' for now
+    # If display_map parameter is True, it opens the geocoded location in a web browser using google maps
 
     # Geocode individual address and show the result on map
     result = geocode("Kokkosaarenkatu 6, Helsinki", display_map=True)
 
     # Geocode a coordinate pair and print out the address
-    result = geocode("2.12443,-15.23245", display_map=True)
+    result = geocode("64.12443,25.23245", display_map=False)
 
     # Print out all of the information (result is a Python dictionary)
     print result

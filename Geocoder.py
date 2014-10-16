@@ -25,7 +25,7 @@ def geocode(location, provider, display_map=False):
             break
         i+=1
 
-    print geo.json
+    #print geo.json
 
     if display_map == True:
         #Check if address is a coordinate pair
@@ -74,6 +74,10 @@ def main ():
     # Get coordinates of an address or address of a 'lat, lon' (e.g. '60.1726, 24.9510') --> only 'google' for now
     # If display_map parameter is True, it opens the geocoded location in a web browser using google maps
 
+    #----------------------------------------------
+    # Geocode single address or coordinate pair
+    #----------------------------------------------
+
     # Geocode individual address and show the result on map
     result = geocode("Kokkosaarenkatu 6, Helsinki", display_map=True)
 
@@ -86,24 +90,31 @@ def main ():
     # Print out only specific attribute from the dictionary
     print result['address']
 
-    # Read data in
+    #---------------------------------------------------------------------------------------
+    # Geocode multiple addresses and make a shapefile from them (using (geo)pandas approach)
+    #---------------------------------------------------------------------------------------
+
+    # Read data in (this example is from excel file)
     fp = r"...\OsoitteetKarttaan.xls"
     data = pd.read_excel(fp)
 
     # Set prevailing zeros to fill ZIP-codes, e.g. 530 --> 00530
     data['Postinumero'] = data['Postinumero'].apply(lambda x: str(x).zfill(5))
 
-    #Rename too long attribute names
+    #Rename too long attribute names (max 10 characters)
     data.columns = [u'Omistaja', u'Lahiosoite', u'Postinum', u'Postitoim', u'KoiraNimi', u'KoiraRotu']
 
     #Create as good as possible address name: e.g. ExampleStreet 22, 00150 Helsinki, Finland
-    data['address'] = data['Lahiosoite'] + ', ' + data['Postinum'] + ' ' + data['Postitoim']
+    data['address'] = data['Lahiosoite'] + ', ' + data['Postinum'] + ' ' + data['Postitoim'] + ', Finland'
 
     #Geolocate addresses
     data = geolocator(data, inputType='address', locCol='address', destCol='geometry', provider='google')  # Available providers: 'google', 'nokia', 'tomtom', 'osm', 'bing' --> same as 'nokia'
 
-    #Create geodataframe from results
-    geo = gpd.GeoDataFrame(data, geometry='geometry')
+    #Determine coordinate system for the data (almost always WGS84)
+    coordsys = {u'no_defs': True, u'datum': u'WGS84', u'proj': u'longlat'}
+
+    #Create geodataframe from the results
+    geo = gpd.GeoDataFrame(data, geometry='geometry', crs=coordsys)
 
     out = r"...\GeocodedLocations.shp"
     geo.to_file(out, driver="ESRI Shapefile")

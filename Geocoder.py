@@ -82,13 +82,13 @@ def main ():
     result = geocode("Kokkosaarenkatu 6, Helsinki", display_map=True)
 
     # Geocode a coordinate pair and print out the address
-    result = geocode("64.12443,25.23245", display_map=True)
+    result2 = geocode("64.12443,25.23245", display_map=True)
 
     # Print out all of the information (result is a Python dictionary)
-    print result
+    print result2
 
     # Print out only specific attribute from the dictionary
-    print result['address']
+    print result2['address']
 
     #---------------------------------------------------------------------------------------
     # Geocode multiple addresses and make a shapefile from them (using (geo)pandas approach)

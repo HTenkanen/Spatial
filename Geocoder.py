@@ -5,7 +5,7 @@ from shapely.geometry import Point
 import pandas as pd
 import geopandas as gpd
 
-def geocode(location, provider, display_map=False):
+def geocode(location, provider='google', display_map=False):
 
     # Try to find the location 10 times before raising the warning and returning coordinates (0.0, 0.0)
     i = 0
